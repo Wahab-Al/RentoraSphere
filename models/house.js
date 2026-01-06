@@ -1,12 +1,12 @@
 //#region 
 import mongoose from "mongoose";
-import validator, { trim } from "validator";
+import validator from "validator";
 import argon2 from "argon2";
 
 //#endregion
 
 
-//#region 
+//#region House / Apartment Schema
 const houseSchema = new mongoose.Schema({
   title:{type: String, required: true, trim: true, maxLength: 50, minLength: 5},
   isHouse: {type: Boolean, default: false},
@@ -16,7 +16,7 @@ const houseSchema = new mongoose.Schema({
   bedrooms: {type: Number, required: true, min: 0},
   bathrooms: {type: Number, required: false, min: 0},
   isAvailable: {type: Boolean, default: true}
-}, { timeStamp: true})
+}, { timestamps: true})
 //#endregion
 
 //#region Check Hook if it House or Apartment

@@ -18,5 +18,5 @@ export default _config;
 
 
 //#region 
-//TODO: USE: npm install eslint --save-dev then npx eslint --init
+  //TODO: USE: npm install eslint --save-dev then npx eslint --init
 //#endregion
