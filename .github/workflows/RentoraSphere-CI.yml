@@ -2,12 +2,12 @@ name: Rentor Sphere CI
 
 on: 
   push:
-    branches: ['main', 'feature/*']
+    branches: ['master', 'feature/*']
     paths:
       - "src/**"
       - ".github/workflows/**"
   pull_request:
-    branches: ['main']
+    branches: ['master']
     paths:
       - "src/**"
       - ".github/workflows/**"
