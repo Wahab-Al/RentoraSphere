@@ -4,11 +4,25 @@ import  {getClients, createClient, updateClientData, getClientDataById, deleteCl
 
 //#region 
 
+// create new client data methodController
+const registerClient = async(request, response) =>{
+  try {
+    const { client, token } = await createClient(request.body)
+    return response.status(201).json({message: 'Registraion successsful', client, token })
+  } catch (error) {
+    // Check for duplicate email error
+    if (error.code === 11000) {
+      return response.status(400).json({ error: "Email already exists" });
+    }
+    const status = error.message.includes("not found") ? 404 : 500;
+    response.status(status).json({error: error.message})
+  }
+}
 // login methodController
 const loginClient = async(request, response) =>{
   try {
-    const client = await login(request.body.email, request.body.password)
-    response.status(200).json({message: 'Login successsful', client})
+    const { client, token } = await login(request.body.email, request.body.password)
+    response.status(200).json({message: 'Login successsful', client, token })
   } catch (error) {
     const status = error.message.includes("not found") ? 401 : 500;
     response.status(status).json({messge: 'Login Faild', error: error.message})
@@ -37,20 +51,6 @@ const _getClientDataById = async(request, response) =>{
   }
 }
 
-// create new client data methodController
-const registerClient = async(request, response) =>{
-  try {
-    const client = await createClient(request.body)
-    return response.status(201).json(client)
-  } catch (error) {
-    // Check for duplicate email error
-    if (error.code === 11000) {
-      return response.status(400).json({ error: "Email already exists" });
-    }
-    const status = error.message.includes("not found") ? 404 : 500;
-    response.status(status).json({error: error.message})
-  }
-}
 
 // update client data methodController 
 const _updateClientData = async (request, response) =>{

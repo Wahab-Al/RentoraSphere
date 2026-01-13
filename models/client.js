@@ -2,6 +2,8 @@
 import mongoose from "mongoose";
 import validator from "validator";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken"
+import _config from "../config/env.js";
 //#endregion
 
 //#region 
@@ -25,7 +27,8 @@ const clientSchema = new mongoose.Schema({
   phone: {type: String, required: true, minLength:7, maxLength: 15},
   role: {type: String, enum: ["client","admin","agent"], default: "client"},
   lastlogin: {type: Date},
-  isActiveAcc: {type: Boolean, default: true}
+  isActiveAcc: {type: Boolean, default: true},
+  tokens: [{type: String, required: true}]
 },{timestamps: true})
 
 //#endregion
@@ -68,6 +71,16 @@ clientSchema.statics.findByCredentials = async function(enteredEmail, enteredPas
   if(!client || !client.isActiveAcc || !(await argon2.verify(client.password, enteredPassword)))
     throw new Error('Invalid email, password or inactive account')
   return client
+}
+//#endregion
+
+//#region generate Token function
+clientSchema.methods.generateToken = async function (){
+  const client = this
+  const token = jwt.sign({sub: client._id.toString()}, _config.jwt_secret_key, {expiresIn: '7h'})
+  client.tokens = client.tokens.concat(token)
+  await client.save()
+  return token
 }
 //#endregion
 
