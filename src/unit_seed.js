@@ -1,20 +1,20 @@
 //#region 
 import mongoose from "mongoose";
 import dotenv from 'dotenv'
-import House from "../models/house.js";
-import { houses } from "./seed/houses.js";
+import Unit from "../models/unit.js";
+import { units } from "./seed/units.js";
 //#endregion
 
 //#region 
 dotenv.config()
 
-async function seedHouseDatabase() { 
+async function seedUnitDatabase() { 
   try { 
     await mongoose.connect(process.env.MONGO_URI); 
-    await House.deleteMany();
+    await Unit.deleteMany();
 
-    await House.insertMany(houses); 
-    console.log(`✅ ${houses.length} houses seeded.`); 
+    await Unit.insertMany(units); 
+    console.log(`✅ ${units.length} units seeded.`); 
   } catch (error) { 
     console.error("❌ Seeding failed:", error.message); 
   } finally { 
@@ -22,4 +22,4 @@ async function seedHouseDatabase() {
   }}
 //#endregion
 
-seedHouseDatabase();
+seedUnitDatabase();

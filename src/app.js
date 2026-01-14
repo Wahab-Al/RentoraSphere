@@ -1,7 +1,7 @@
 //#region 
 import express from 'express'
-import houseRoutes from '../routes/house_routes.js'
-import clientsRoutes from '../routes/client_routes.js'
+import unitRoutes from '../routes/unit_routes.js'
+import usersRoutes from '../routes/user_routes.js'
 //#endregion
 
 const app = express()
@@ -9,11 +9,11 @@ const app = express()
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
-// All endpoints defined in houseRoutes will be prefixed with '/api'.
-app.use('/api', houseRoutes)
+// All endpoints defined in unitRoutes will be prefixed with '/api'.
+app.use('/api/units', unitRoutes)
 
 // All endpoints in clientsRoutes will also be prefixed with '/api'.
-app.use('/api', clientsRoutes)
+app.use('/api/users', usersRoutes)
 
 
 export default app
