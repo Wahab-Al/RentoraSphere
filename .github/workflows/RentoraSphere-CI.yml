@@ -1,0 +1,45 @@
+name: Rentor Sphere CI
+
+on: 
+  push:
+    branches: ['master', 'feature/*']
+    paths:
+      - "src/**"
+      - ".github/workflows/**"
+  pull_request:
+    branches: ['master']
+    paths:
+      - "src/**"
+      - ".github/workflows/**"
+
+jobs: 
+  build_Project: 
+    strategy: 
+      fail-fast: false 
+      matrix: 
+        operating_system: [windows-latest, ubuntu-latest, macos-latest] 
+    name: Build on ${{ matrix.operating_system }} 
+    runs-on: ${{ matrix.operating_system }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6.0.1
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6.1.0
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint code
+        run: npm run lint --if-present
+
+      - name: Run Tests
+        run: npm test --if-present
+
+      - name: Build project
+        run: npm run build --if-present
+        
