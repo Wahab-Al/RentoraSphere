@@ -33,10 +33,8 @@ const userSchema = new mongoose.Schema({
   password: {type: String, required: true, minlength:8, trim: true, select: false,
     validate: {
     validator: (val) => {
-      // const isHash = val.startsWith('$argon2')
       const regexPass =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[^\s]{8,}$/;
-      // return isHash || regexPass.test(val);
         return regexPass.test(val);
     },
     message:

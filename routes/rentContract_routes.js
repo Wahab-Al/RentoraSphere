@@ -1,7 +1,7 @@
 //#region 
 import express from 'express'
 import authenticate from '../middlewares/authenticate.js'
-import { approveContractController, createContractController, deleteContractDataController, getContractByIdController, getContractsController, updateContractDataController } from '../controllers/rentContract_controller.js'
+import { approveContractController, createContractController, deleteContractDataController, getContractByIdController, getContractsController, rejectContractController, updateContractDataController } from '../controllers/rentContract_controller.js'
 //#endregion
 
 const router = express.Router()
@@ -18,5 +18,7 @@ router.patch('/:id', authenticate, updateContractDataController)
 router.delete('/:id', authenticate, deleteContractDataController)
 // Owner approves a pending rental request
 router.patch('/approve/:contractId', authenticate, approveContractController)
+// Owner reject a pending rental request
+router.patch('/approve/:contractId', authenticate, rejectContractController)
 
 export default router

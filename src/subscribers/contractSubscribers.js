@@ -39,7 +39,7 @@ const createSubscribers = () => {
         }
     });
 
-    // For user
+    // For user - Approve Notification
     contractEvents.on('contractApproved', async (contract) => {
         try {
             const { user, unit } = contract;
@@ -74,6 +74,57 @@ const createSubscribers = () => {
             await sendEmail(user.email, 'Your Rental Request Approved', emailHtml);
         } catch (error) {
             console.error('[Notification Error - User]:', error.message);
+        }
+    });
+
+    // For user - Rejection Notification
+    contractEvents.on('contractReject', async (contract) => {
+        try {
+            const { user, unit } = contract;
+            console.log(`[Notification]: Sending rejection notification to user: ${user.email}`);
+
+            const emailHtml = `
+                <div style="background-color: #f4f4f4; padding: 20px; font-family: 'Segoe UI', sans-serif;">
+                    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <div style="background-color: #e74c3c; padding: 20px; text-align: center; color: #ffffff;">
+                            <h1 style="margin: 0; font-size: 24px;">Rental Request Update 📍</h1>
+                        </div>
+                        <div style="padding: 30px; color: #333333;">
+                            <h2 style="color: #2c3e50;">Hello ${user.name},</h2>
+                            <p style="font-size: 16px; color: #555555;">Thank you for your interest in <strong style="color: #e74c3c;">${unit.title}</strong>.</p>
+                            
+                            <p style="font-size: 16px; color: #555555; line-height: 1.6;">
+                                We regret to inform you that the owner has decided to decline your rental request at this time. 
+                                As a result, the temporary reservation has been cancelled.
+                            </p>
+
+                            <div style="background-color: #fff5f5; border-left: 4px solid #e74c3c; padding: 15px; margin: 20px 0;">
+                                <p style="margin: 5px 0;"><strong>🏢 Property:</strong> ${unit.title}</p>
+                                <p style="margin: 5px 0;"><strong>📍 Location:</strong> ${unit.location}</p>
+                                <p style="margin: 5px 0;"><strong>❌ Status:</strong> Request Declined</p>
+                            </div>
+
+                            <p style="font-size: 14px; color: #7f8c8d; margin-top: 20px;">
+                                Don't worry! There are many other great properties waiting for you on RentoraSphere.
+                            </p>
+
+                            <div style="text-align: center; margin-top: 30px;">
+                                <a href="https://my_rentora_sphere_app_example.com/search" 
+                                    style="background-color: #34495e; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                                    Explore Other Units
+                                </a>
+                            </div>
+                        </div>
+                        <div style="background-color: #f9f9f9; padding: 15px; text-align: center; font-size: 12px; color: #bdc3c7;">
+                            If you have questions, please contact our support team.
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            await sendEmail(user.email, 'Update Regarding Your Rental Request', emailHtml);
+        } catch (error) {
+            console.error('[Notification Error - User Reject]:', error.message);
         }
     });
 };

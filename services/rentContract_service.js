@@ -59,55 +59,6 @@ const createContractData = async(unitId, userId, contractDetails)=>{
   }
 }
 
-// approv Rental contract
-const approveContract = async(contractId, ownerId)=>{
-
-  // start session to trak the changes
-  const session = await mongoose.startSession()
-  session.startTransaction()
-  try {
-    
-    const contract = await RentContract.findById(contractId)
-    .populate([
-      { path: 'unit', select: 'title price location' },
-      { path: 'user', select: 'name surname email phone' }
-    ]).session(session)
-
-    if(!contract) throw new Error('Contract not found')
-    
-    if(contract.unitOwner.toString() !== ownerId.toString()){
-      throw new  Error('Unauthorized: Only owner can approve this contract request')
-    }
-
-    if(contract.orderStatus !== 'pending'){
-      throw new  Error (`Invalid action: Contract is already ${contract.orderStatus}`)
-    }
-
-    contract.orderStatus = 'approved'
-    contract.contractState = 'active'
-
-    await contract.save({session})
-
-    await Unit.findByIdAndUpdate(contract.unit._id, {
-      unitStatus: 'rented'
-    }, {session})
-
-    // commit and and the session
-    await session.commitTransaction();
-    session.endSession();
-
-    // publish Notification
-    contractEvents.emit('contractApproved', contract)
-
-    return {message: 'Approved successfully', contract: contract }
-  } catch (error) {
-    // reject changes
-    await session.abortTransaction();
-    session.endSession();
-    throw error;
-  }
-}
-
 // get all Contracts controller
 const getContracts = async ()=>{
   return  await RentContract.find()
@@ -172,4 +123,101 @@ const deleteContractData = async(contractId) =>{
 
 //#endregion
 
-export { getContracts, getContractById, createContractData, updateContractData, deleteContractData, approveContract }
+
+//#region 
+const updateContractStatusToApproveOrRejectContract = async (contractId, ownerId, action) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const contract = await RentContract.findById(contractId)
+      .populate([
+        { path: 'unit', select: 'title price location' },
+        { path: 'user', select: 'name surname email phone' }
+      ]).session(session);
+
+    if (!contract) throw new Error('Contract not found');
+    
+    if (contract.unitOwner.toString() !== ownerId.toString()) {
+      throw new Error(`Unauthorized: Only owner can ${action} this contract`);
+    }
+
+    if (contract.orderStatus !== 'pending') {
+      throw new Error(`Invalid action: Contract is already ${contract.orderStatus}`);
+    }
+
+    const isApprove = action === 'approve';
+    
+    contract.orderStatus = isApprove ? 'approved' : 'cancelled';
+    contract.contractState = isApprove ? 'active' : 'cancelled';
+    const unitNewStatus = isApprove ? 'rented' : 'available';
+
+    await contract.save({ session });
+    await Unit.findByIdAndUpdate(contract.unit._id, { unitStatus: unitNewStatus }, { session });
+
+    await session.commitTransaction();
+
+    const eventName = isApprove ? 'contractApproved' : 'contractReject';
+    contractEvents.emit(eventName, contract);
+
+    return { message: `${action} successfully`, contract };
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+//#endregion
+
+// // approv Rental contract
+// const approveContract = async(contractId, ownerId)=>{
+
+//   // start session to trak the changes
+//   const session = await mongoose.startSession()
+//   session.startTransaction()
+//   try {
+    
+//     const contract = await RentContract.findById(contractId)
+//     .populate([
+//       { path: 'unit', select: 'title price location' },
+//       { path: 'user', select: 'name surname email phone' }
+//     ]).session(session)
+
+//     if(!contract) throw new Error('Contract not found')
+    
+//     if(contract.unitOwner.toString() !== ownerId.toString()){
+//       throw new  Error('Unauthorized: Only owner can approve this contract request')
+//     }
+
+//     if(contract.orderStatus !== 'pending'){
+//       throw new  Error (`Invalid action: Contract is already ${contract.orderStatus}`)
+//     }
+
+//     contract.orderStatus = 'approved'
+//     contract.contractState = 'active'
+
+//     await contract.save({session})
+
+//     await Unit.findByIdAndUpdate(contract.unit._id, {
+//       unitStatus: 'rented'
+//     }, {session})
+
+//     // commit and and the session
+//     await session.commitTransaction();
+//     session.endSession();
+
+//     // publish Notification
+//     contractEvents.emit('contractApproved', contract)
+
+//     return {message: 'Approved successfully', contract: contract }
+//   } catch (error) {
+//     // reject changes
+//     await session.abortTransaction();
+//     session.endSession();
+//     throw error;
+//   }
+// }
+
+
+export { getContracts, getContractById, createContractData, updateContractData, deleteContractData, updateContractStatusToApproveOrRejectContract }

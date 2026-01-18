@@ -30,11 +30,27 @@ async function _getUnitById(request, response) {
 // update unit data controller
 async function _updateUnitData(request, response) {
   try {
-    const newUnit = await updateUnitData(request.params.id, request.body)
-    response.status(201).json(newUnit)
+    const { id } = request.params;
+    const currentUserId = request.user._id.toString();
+    const currentUserRole = request.user.role;
+
+    const unit = await getUnitById(id);
+    if (!unit) {
+      return response.status(404).json({ error: "Unit not found" });
+    }
+
+    const isOwner = unit.owner?.toString() === currentUserId;
+    const isSysManager = currentUserRole === 'sysManager';
+
+    if (isSysManager || isOwner) {
+      const newUnit = await updateUnitData(id, request.body);
+      return response.status(200).json({message: `unit data with id: ** ${id} ** is updated`, unit: newUnit});
+    }
+    return response.status(403).json({ error: "Access Denied" });
+
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
-    response.status(status).json({error: error.message})
+    return response.status(status).json({ error: error.message });
   }
 }
 
@@ -52,8 +68,23 @@ async function createNewUnitData(request, response) {
 // delete unit data controller
 async function _deleteUnitData(request, response) {
   try {
-    const deletedUnit = await deleteUnitData(request.params.id)
-    response.status(200).json(deletedUnit)
+    const { id } = request.params;
+    const currentUserId = request.user._id.toString();
+    const currentUserRole = request.user.role;
+    const unit = await getUnitById(id);
+    if (!unit) {
+      return response.status(404).json({ error: "Unit not found" });
+    }
+
+    const isOwner = unit.owner?.toString() === currentUserId;
+    const isSysManager = currentUserRole === 'sysManager';
+
+    if (isSysManager || isOwner) {
+      const deletedUnit = await deleteUnitData(id);
+      return response.status(200).json({message: `unit data with id: ** ${id} ** is deleted`, unit: deletedUnit});
+    }
+
+    return response.status(403).json({ error: "Access Denied" });
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})

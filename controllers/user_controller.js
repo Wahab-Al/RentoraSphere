@@ -39,8 +39,16 @@ const loginUser = async(request, response) =>{
 // get all users data methodController
 const displayUsers = async(request, response) =>{
   try {
-    const users = await getUsers();
-    response.status(200).json(users)
+    const currentUserRole =  request.user.role
+    if(currentUserRole === 'sysManager'){
+      const users = await getUsers();
+      response.status(200).json(users)
+    }
+    else{
+      return response.status(403).json({
+        message: "Access Denied: You are not authorized."
+      });
+    }
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
@@ -50,8 +58,15 @@ const displayUsers = async(request, response) =>{
 // get user data by id methodController
 const _getUserDataById = async(request, response) =>{
   try {
-    const user = await getUserDataById(request.params.id)
-    response.status(200).json(user)
+    const currentUserRole =  request.user.role
+    if(currentUserRole === 'sysManager'){
+      const user = await getUserDataById(request.params.id)
+      response.status(200).json(user)
+    }else{
+      return response.status(403).json({
+        message: "Access Denied: You are not authorized to view this user."
+      });
+    }
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
@@ -62,8 +77,15 @@ const _getUserDataById = async(request, response) =>{
 // update user data methodController 
 const _updateUserData = async (request, response) =>{
   try {
-    const user = await updateUserData(request.params.id, request.body)
-      return response.status(201).json({message: `update user with id: ** ${request.params.id} ** is successfully`, user})
+    const currentUserRole = request.user.role
+    if(currentUserRole === 'sysManager'){
+      const user = await updateUserData(request.params.id, request.body)
+        return response.status(201).json({message: `update user with id: ** ${request.params.id} ** is successfully`, user})
+    }else{
+      return response.status(403).json({
+        message: "Access Denied: You are not authorized to view this contract."
+      });
+    }
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
@@ -73,8 +95,20 @@ const _updateUserData = async (request, response) =>{
 // delete user data methodController
 const _deleteUserData = async (request, response) =>{
   try {
-    const deleteduser = await deleteUserData(request.params.id)
-    response.status(200).json({message: `delete user with id: ** ${request.params.id} ** is successfully`, deleteduser})
+    const currentUserRole = request.user.role
+    const currentUserId = request.user._id.toString()
+    const {id} = request.params
+    if(currentUserRole === 'sysManager' || (currentUserId === id)){
+      const deleteduser = await deleteUserData(request.params.id)
+      if (!deleteduser) {
+        return response.status(404).json({ success: false, message: "User not found" });
+      }
+      response.status(200).json({message: `delete user with id: ** ${request.params.id} ** is successfully`, deleteduser})
+    }else{
+      return response.status(403).json({
+        message: "Access Denied: You are not authorized."
+      });
+    }
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
