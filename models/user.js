@@ -33,16 +33,18 @@ const userSchema = new mongoose.Schema({
   password: {type: String, required: true, minlength:8, trim: true, select: false,
     validate: {
     validator: (val) => {
+      // const isHash = val.startsWith('$argon2')
       const regexPass =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[^\s]{8,}$/;
-      return regexPass.test(val);
+      // return isHash || regexPass.test(val);
+        return regexPass.test(val);
     },
     message:
       "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.",
   }
   },
   phone: {type: String, required: true, minLength:7, maxLength: 15},
-  role: {type: String, enum: ["user","admin","unitOwner"], default: "user"},
+  role: {type: String, enum: ["user","sysManager","unitOwner"], default: "user"},
   ownerData:{
     shipType: {type: String, enum: ['private', 'company'], required: isOwner},
     companyName: {type: String, required: isCompanyNameRequired}

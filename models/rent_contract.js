@@ -7,7 +7,7 @@ const rentContractSchema = new mongoose.Schema({
   title: { type: String, required: true } ,
   rentBeginn: { type: Date, required: true },
   rentEnd: { type: Date, required: true },
-  contractState: { type: String, enum: ['active','scheduled','expired','cancelled'], required: true },
+  contractState: { type: String, enum: ['active','scheduled','expired','cancelled'], default: 'scheduled'},
   monthRentPrice: { type: Number, required: true },
   totalContractValue: { type: Number, required: true },
   user: {
@@ -23,8 +23,9 @@ const rentContractSchema = new mongoose.Schema({
   unitOwner: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'UnitOwner'
+    ref: 'User'
   },
+  orderStatus: {type: String, enum: ['pending', 'cancelled', 'approved'], default: 'pending'}
 },{timestamps: true})
 
 

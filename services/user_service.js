@@ -12,11 +12,6 @@ const createUser = async(enteredUser) =>{
   return {user, token}
 }
 
-/**
- * @desc    Authenticate user & get token
- * @route   POST /api/users/login
- * @access  Public
- */
 
 // login 
 const login = async(email, password) =>{

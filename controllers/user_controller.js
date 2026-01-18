@@ -7,6 +7,13 @@ import  {getUsers, createUser, updateUserData, getUserDataById, deleteUserData, 
 // create new user data methodController
 const registerUser = async(request, response) =>{
   try {
+    const role = request.body.role?.trim()
+    if (role && role.toLowerCase() === 'sysmanager') {
+      return response.status(403).json({ 
+        success: false, 
+        message: "Forbidden role!, registration as sysManager is prohibited." 
+      });
+    }
     const { user, token } = await createUser(request.body)
     return response.status(201).json({message: 'Registraion successsful', user, token })
   } catch (error) {
@@ -56,7 +63,7 @@ const _getUserDataById = async(request, response) =>{
 const _updateUserData = async (request, response) =>{
   try {
     const user = await updateUserData(request.params.id, request.body)
-    return response.status(201).json(user)
+      return response.status(201).json({message: `update user with id: ** ${request.params.id} ** is successfully`, user})
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
@@ -67,7 +74,7 @@ const _updateUserData = async (request, response) =>{
 const _deleteUserData = async (request, response) =>{
   try {
     const deleteduser = await deleteUserData(request.params.id)
-    response.status(200).json({message: `delete user with id: **${request.params.id}** is successfully`, deleteduser})
+    response.status(200).json({message: `delete user with id: ** ${request.params.id} ** is successfully`, deleteduser})
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
