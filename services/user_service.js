@@ -12,7 +12,6 @@ const createUser = async(enteredUser) =>{
   return {user, token}
 }
 
-
 // login 
 const login = async(email, password) =>{
     const user = await User.findByCredentials(email, password)
@@ -21,6 +20,7 @@ const login = async(email, password) =>{
     const token = await user.generateToken()
     return {user, token}
 }
+
 // get all users data 
 const getUsers = async()=>{
   return  await User.find().sort({createdAt: -1})
@@ -63,6 +63,30 @@ const deleteUserData = async(userId)=>{
   return deletedUser
 }
 
+// remove token to log out of an user account:
+const removeToken = async(userId, token)=>{
+  const user = await User.findById(userId)
+  if(!user){
+    throw new Error(`user with id: ${userId} that you call is not exist`)
+  }
+  user.tokens = user.tokens.filter(_token => _token !== token)
+  await user.save()
+  return true
+}
+
+
+// remove all tokens to log out of all devices:
+const removeAllTokens = async(userId)=>{
+  const result = await User.updateOne(
+    { _id: userId },
+    { $set: { tokens: [] } }
+  );
+
+  if (result.matchedCount === 0) {
+    throw new Error(`User with ID: ${userId} does not exist`);
+  }
+  return true
+}
 //#endregion
 
-export { getUsers, createUser, getUserDataById, updateUserData, deleteUserData, login }
+export { getUsers, createUser, getUserDataById, updateUserData, deleteUserData, login, removeToken, removeAllTokens }

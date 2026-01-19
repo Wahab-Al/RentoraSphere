@@ -1,5 +1,5 @@
 //#region 
-import  {getUsers, createUser, updateUserData, getUserDataById, deleteUserData, login } from '../services/user_service.js'
+import  {getUsers, createUser, updateUserData, getUserDataById, deleteUserData, login, removeToken, removeAllTokens } from '../services/user_service.js'
 //#endregion
 
 //#region 
@@ -115,4 +115,29 @@ const _deleteUserData = async (request, response) =>{
   }
 }
 
-export { displayUsers, registerUser, _updateUserData, _getUserDataById, _deleteUserData, loginUser }
+// log out user accaount:
+const logout = async(request, response) =>{
+  try {
+    const currentUserId = request.user._id
+    const token = request.token
+    await removeToken(currentUserId, token)
+    response.status(200).json({ message: "Logged out successfully" });
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+  
+}
+
+// log out user of all:
+const logoutAll = async(request, response) => {
+  try {
+    await removeAllTokens(request.user._id)
+    response.status(200).json({ 
+        message: "Logged out from all devices successfully" 
+    });
+  } catch (error) {
+    response.status(500).json({ error: error.message });
+  }
+}
+
+export { displayUsers, registerUser, _updateUserData, _getUserDataById, _deleteUserData, loginUser, logout, logoutAll }

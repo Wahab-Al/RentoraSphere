@@ -1,5 +1,5 @@
 //#region 
-import express from 'express'
+import express, { response } from 'express'
 import unitRoutes from '../routes/unit_routes.js'
 import usersRoutes from '../routes/user_routes.js'
 import createSubscribers from './subscribers/contractSubscribers.js'
@@ -15,13 +15,20 @@ createSubscribers()
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 
-
+//#region ApI Route Configuration
+// Unit Management
 app.use('/api/units', unitRoutes)
 
-// All endpoints 
+// User Management
 app.use('/api/users', usersRoutes)
 
-// All endpoints in 
+// Contracts Management
 app.use('/api/contracts', contractRoutes)
+
+//404 Handler to catch requests for non-existent endpoints
+app.use((request, response)=>{
+  response.status(404).json({status: 'request fail', message: `Can´t find ${request.originalUrl} on this server!`})
+})
+//#endregion
 
 export default app
