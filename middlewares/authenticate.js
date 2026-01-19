@@ -15,10 +15,10 @@ const authenticate = async (request, response, next) =>{
     
     const token = header.replace('Bearer ','')
     const decoded = jwt.verify(token, _config.jwt_secret_key)
-    const user = await User.findOne({ _id: decoded.sub, tokens: token })
+    const user = await User.findOne({ _id: decoded.sub, tokens: token }).select('+tokens')
 
     if(!user)
-      return response.status(404).json({message: `user with ${decoded.sub} is not found`})
+      return response.status(401).json({ message: 'Session expired or invalid' })
     request.user = user
     request.token = token
     next()
