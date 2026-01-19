@@ -639,15 +639,15 @@
   "variable": [
     {
       "key": "baseUrlUsers",
-      "value": ""
+      "value": "http://localhost:5001/api/users/"
     },
     {
       "key": "baseUrlUnits",
-      "value": ""
+      "value": "http://localhost:5001/api/units/"
     },
     {
       "key": "baseUrlContracts",
-      "value": ""
+      "value": "http://localhost:5001/api/contracts/"
     },
     {
       "key": "userId",
