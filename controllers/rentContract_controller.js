@@ -7,26 +7,22 @@ const getContractsController = async (request, response) => {
     const currentUserRole = request.user.role
     const contracts = await getContracts();
     if(currentUserRole === 'sysManager'){
-      response.status(200).json({
+      return response.status(200).json({
         message: 'Rental Contracts has been invoked',
         data: contracts
       })
     }
-    const userContracts = contracts.filter(contract=>{
+    const userContracts = contracts.filter(contract => {
       const isRenter = contract.user?._id?.toString() === currentUserId;
       const isOwner = contract.unitOwner?._id?.toString() === currentUserId;
-      if(isRenter || isOwner)
-        return true
-      else{
-        return false
-      }
-    })
+      return isRenter || isOwner;
+    });
     return response.status(200).json({
       message: `Rental Contracts for user with id: ** ${currentUserId} ** has been invoked`,
       data: userContracts
     });
   } catch (error) {
-    response.status(500).json({
+    return response.status(500).json({
       error: error.message
     });
   }
