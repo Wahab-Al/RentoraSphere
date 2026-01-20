@@ -18,7 +18,7 @@ const authenticate = async (request, response, next) =>{
     const user = await User.findOne({ _id: decoded.sub, tokens: token }).select('+tokens')
 
     if(!user)
-      return response.status(401).json({ message: 'Session expired or invalid' })
+      return response.status(401).json({ message: 'Not authenticated, or Session expired or invalid' })
     request.user = user
     request.token = token
     next()

@@ -16,7 +16,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n     \"name\": \"Ismaiel\",\r\n    \"surname\": \"Lop\",\r\n    \"email\": \"ism400@gmx.com\",\r\n    \"phone\": \"+45836999945\",\r\n    \"password\": \"Is-quSai4#79@Kingdom\",\r\n    \"ownerData\": {\r\n        \"shipType\": \"company\",\r\n        \"companyName\": \"yourStyle\"\r\n    }\r\n}",
+              "raw": "",
               "options": {
                 "raw": {
                   "language": "json"
@@ -71,7 +71,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n\r\n    \"email\":\"tec70dev@gmail.com\",\r\n    \"password\": \"RS7bmw-Qqx!X@ttTr\"\r\n\r\n}",
+              "raw": "",
               "options": {
                 "raw": {
                   "language": "json"
@@ -138,7 +138,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n     \"password\": \"M-quSai4#77@Kingdom\"\r\n}",
+              "raw": "{\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -158,16 +158,10 @@
           "name": "deleteUserData",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"name\" : \"Ousama\",\r\n    \"surname\" : \"Alhamad\",\r\n    \"email\" : \"osi9@gamil.com\",\r\n    \"password\" : \"Bmw-RS7&Toyota\",\r\n    \"phone\" : \"00034873455\"\r\n}"
+              "raw": ""
             },
             "url": {
               "raw": "{{baseUrlUsers}}{{userId}}",
@@ -267,6 +261,25 @@
       "item": [
         {
           "name": "displayUnits",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const responseData = pm.response.json();\r",
+                  "\r",
+                  "if (Array.isArray(responseData) && responseData.length > 0) {\r",
+                  "    const firstUnitId = responseData[0]._id || responseData[0].id;\r",
+                  "    pm.collectionVariables.set(\"unitId\", firstUnitId);\r",
+                  "    console.log(\"Auto-assigned unitId: \" + firstUnitId);\r",
+                  "}"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -285,9 +298,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrlUnits}}",
+              "raw": "{{baseUrlUnits}}{{unitId}}",
               "host": [
-                "{{baseUrlUnits}}"
+                "{{baseUrlUnits}}{{unitId}}"
               ]
             }
           },
@@ -300,7 +313,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"title\": \"bequem apartment\",\r\n    \"unitType\": \"apartment\",\r\n    \"price\": 500,\r\n    \"location\": \"Syrien\",\r\n    \"bedrooms\": 13,\r\n    \"bathrooms\": 89,\r\n    \"isAvailable\": false,\r\n    \"owner\": \"696865c691f8432edff43819\"\r\n}",
+              "raw": "",
               "options": {
                 "raw": {
                   "language": "json"
@@ -323,7 +336,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n    \"title\": \"Lakefront Villa\",\r\n    \"isHouse\": true,\r\n    \"isApartment\": false,\r\n    \"price\": 780000,\r\n    \"location\": \"Potsdam, Germany\",\r\n    \"bedrooms\": 5,\r\n    \"bathrooms\": 3,\r\n    \"isAvailable\": false\r\n}",
+              "raw": "",
               "options": {
                 "raw": {
                   "language": "json"
@@ -331,9 +344,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrlUnits}}",
+              "raw": "{{baseUrlUnits}}{{unitId}}",
               "host": [
-                "{{baseUrlUnits}}"
+                "{{baseUrlUnits}}{{unitId}}"
               ]
             }
           },
@@ -343,17 +356,11 @@
           "name": "deleteUnitData",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "url": {
-              "raw": "{{baseUrlUnits}}",
+              "raw": "{{baseUrlUnits}}{{unitId}}",
               "host": [
-                "{{baseUrlUnits}}"
+                "{{baseUrlUnits}}{{unitId}}"
               ]
             }
           },
@@ -407,7 +414,14 @@
                 "exec": [
                   "pm.test(\"Status code is 200\", function () {",
                   "    pm.response.to.have.status(200);",
-                  "});"
+                  "});",
+                  "",
+                  "const responseData = pm.response.json();",
+                  "if (Array.isArray(responseData) && responseData.length > 0) {",
+                  "    const firstContractId = responseData[0]._id || responseData[0].id;",
+                  "    pm.collectionVariables.set(\"contractId\", firstContractId);",
+                  "    console.log(\"Auto-assigned contractId: \" + firstContractId);",
+                  "}"
                 ],
                 "type": "text/javascript",
                 "packages": {},
@@ -457,7 +471,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"contractDetails\": {\n        \"rentBeginn\": \"2025-08-01\",\n        \"rentEnd\": \"2027-08-01\"\n    }\n}",
+              "raw": "",
               "options": {
                 "raw": {
                   "language": "json"
@@ -465,12 +479,12 @@
               }
             },
             "url": {
-              "raw": "{{baseUrlContracts}}request/",
+              "raw": "{{baseUrlContracts}}request/{{contractId}}",
               "host": [
                 "{{baseUrlContracts}}request"
               ],
               "path": [
-                ""
+                "{{contractId}}"
               ],
               "query": [
                 {
@@ -513,12 +527,12 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrlContracts}}approve/",
+              "raw": "{{baseUrlContracts}}approve/{{contractId}}",
               "host": [
                 "{{baseUrlContracts}}approve"
               ],
               "path": [
-                ""
+                "{{contractId}}"
               ]
             },
             "description": "This is a PUT request and it is used to overwrite an existing piece of data. For instance, after you create an entity with a POST request, you may want to modify that later. You can do that using a PUT request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful PUT request typically returns a `200 OK`, `201 Created`, or `204 No Content` response code."
@@ -556,9 +570,9 @@
               }
             },
             "url": {
-              "raw": "{{baseUrlContracts}}",
+              "raw": "{{baseUrlContracts}}{{contractId}}",
               "host": [
-                "{{baseUrlContracts}}"
+                "{{baseUrlContracts}}{{contractId}}"
               ]
             },
             "description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
