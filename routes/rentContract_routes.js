@@ -19,6 +19,6 @@ router.delete('/:id', authenticate, deleteContractDataController)
 // Owner approves a pending rental request
 router.patch('/approve/:contractId', authenticate, approveContractController)
 // Owner reject a pending rental request
-router.patch('/approve/:contractId', authenticate, rejectContractController)
+router.patch('/reject/:contractId', authenticate, rejectContractController)
 
 export default router

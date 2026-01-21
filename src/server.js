@@ -8,7 +8,7 @@ const PORT =  _config.port
 async function runServer() {
   await connectDB();
   
-  app.listen(PORT, '0.0.0.0', ()=>{
+  app.listen(PORT, ()=>{
     console.log('====================================');
     console.log(`🚀 Server running on port ${PORT}`);
     console.log('====================================');
