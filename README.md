@@ -52,9 +52,9 @@ The API follows RESTful principles. All protected endpoints require:
 | Method | Endpoint | Description | Access |
 | :--- | :--- | :--- | :--- |
 | `POST` | `http://localhost:5001/api/users/register` | Register a new user | Public |
-| `POST` | `http://localhost:5001/api/users/login` | Invalidate current session token |
-| `POST` | `http://localhost:5001/api/users/logout` | Authenticate & receive JWT | Public |
-| `POST` | `http://localhost:5001/api/users/logoutAll` | Invalidate all active sessions for this user | 
+| `POST` | `http://localhost:5001/api/users/login` | Authenticate & receive JWT | Public |
+| `POST` | `http://localhost:5001/api/users/logout` | Invalidate current session token | Private/ Authenticated |
+| `POST` | `http://localhost:5001/api/users/logoutAll` | Invalidate all active sessions for this user | Private/ Authenticated |
 
 ### 🏠 Units (Properties)
 | Method | Endpoint | Description | Access Control |
