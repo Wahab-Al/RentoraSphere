@@ -43,11 +43,19 @@ const loginUser = async(request, response) =>{
     response.status(200).json({message: 'Login successsful', user, token })
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return response.status(400).json({
-        message: "Invalid input data",
-        errors: (error.errors || []).map(error => ({ field: error.path[0], message: error.message }))
-      });
-    }
+  return response.status(400).json({
+    message: "Invalid input data",
+    errors: error.issues.map(issue => ({
+      field:
+        issue.path.length > 0
+          ? issue.path.join('.')
+          : issue.code === 'unrecognized_keys'
+            ? issue.keys.join(', ')
+            : 'body',
+      message: issue.message
+    }))
+  })
+}
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
   }
