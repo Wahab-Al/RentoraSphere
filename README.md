@@ -11,6 +11,14 @@
 [![Mailtrap](https://img.shields.io/badge/Mailtrap-Email_Testing-orange?logo=mailtrap&logoColor=white)](https://mailtrap.io)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+## 🔐 Security Stack
+[![Helmet](https://img.shields.io/badge/Helmet-000000?logo=helmet&logoColor=white)](https://helmetjs.github.io/)
+[![XSS Protection](https://img.shields.io/badge/XSS-Protection-blue?logo=security&logoColor=white)](https://owasp.org/www-community/attacks/xss/)
+[![MongoDB Injection](https://img.shields.io/badge/NoSQL-Injection-green?logo=mongodb&logoColor=white)](https://owasp.org/www-community/attacks/NoSQL_Injection)
+[![HPP](https://img.shields.io/badge/HPP-Protection-orange?logo=security&logoColor=white)](https://www.npmjs.com/package/hpp)
+[![Rate Limiting](https://img.shields.io/badge/Rate-Limit-red?logo=fastapi&logoColor=white)](https://www.npmjs.com/package/express-rate-limit)
+
+
 
 # 🏢 Rentora Speher | Advanced Property Management API
 
