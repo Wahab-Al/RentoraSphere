@@ -125,6 +125,20 @@ EMAIL_PASS=`your_mailtrap_password`
 }
 
 ```
+## Screenshots: 📸
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/registerUser.png" alt="Register User" width="300"><img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/login.png" alt="Login" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/logout.png" alt="Logout" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/rentRequest.png" alt="Rent Request" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/rejectContract.png" alt="Reject Contract" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/approveContract.png" alt="Approve Contract" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/nodemailerRequest.png" alt="Email Request" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/nodemailerReject.png" alt="Email Reject" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/nodemailerApprove.png" alt="Email Approve" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/contractsList.png" alt="Contracts List" width="300">
+<img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/UnitList.png" alt="Unit List" width="300">
+
+
+---
 # 🏗 Installation & Setup:
 
 ### Clone the Repository
