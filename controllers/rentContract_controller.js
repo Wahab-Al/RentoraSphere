@@ -1,4 +1,7 @@
+
 import { updateContractStatusToApproveOrRejectContract, createContractData, getContracts, getContractById, updateContractData, deleteContractData } from "../services/rentContract_service.js"
+import { zodCreatContract, zodUpdateContract } from "../validators/contract_validator.js"
+import { z } from 'zod'
 
 // get all contracts
 const getContractsController = async (request, response) => {
@@ -66,47 +69,64 @@ const createContractController = async (request, response)=>{
   try {
     const {unitId} = request.params
     const userId = request.user._id
-    const {contractDetails} = request.body || {}
-
-    if (!contractDetails || !contractDetails.rentBeginn || !contractDetails.rentEnd) {
-      return response.status(400).json({ 
-        error: "Missing contract details: rentBeginn and rentEnd are required." 
-      });
-    }
+    const validateData = zodCreatContract.parse(request.body)
     
-    const result = await createContractData(unitId, userId, contractDetails)
-    response.status(201).json({success:true, message: result.message, data: result.contract})
+    const result = await createContractData(unitId, userId, validateData)
+    return response.status(201).json({success:true, message: result.message, data: result.contract})
   } catch (error) {
-    const status = error.message.toLowerCase().includes("not found") || 
-                  error.message.toLowerCase().includes("exist") ? 404 : 400;
-    response.status(status).json({ success: false, error: error.message });
+    if (error instanceof z.ZodError) {
+    return response.status(400).json({
+      success: false,
+      message: "Validation Failed",
+      errors: error.issues.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      }))
+    })
+  }
+    const status = error.message.toLowerCase().includes("not found") ? 404 : 400;
+    return response.status(status).json({ success: false, error: error.message });
   }
 }
 
 // update contract data
 const updateContractDataController = async (request, response) => {
   try {
+    const validateData = zodUpdateContract.parse(request.body)
     const { id } = request.params;
     const currentUserRole = request.user.role;
 
-    const contract = await getContractById(id); 
+    if (Object.keys(validateData).length === 0) {
+      return res.status(400).json({ message: "No valid fields provided" })
+    }
 
+    const contract = await getContractById(id); 
     if (!contract) {
       return response.status(404).json({ error: "Contract not found" });
     }
-    const isSysManager = currentUserRole === 'sysManager';
 
+    const isSysManager = currentUserRole === 'sysManager';
     if (!isSysManager) {
       return response.status(403).json({
         message: "Unauthorized: You don't have permission to update this contract."
       });
     }
-    const updatedContract = await updateContractData(id, request.body);
+    const updatedContract = await updateContractData(id, validateData);
     response.status(200).json({
       message: "Contract updated successfully",
       data: updatedContract
     });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+    return response.status(400).json({
+      success: false,
+      message: "Validation Failed",
+      errors: error.issues.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+        }))
+      })
+    }
     const status = error.message.includes("not found") ? 404 : 400;
     response.status(status).json({
       error: error.message
@@ -131,7 +151,7 @@ const deleteContractDataController = async (request, response) => {
       });
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 400;
-    response.status(status).json({
+    return response.status(status).json({
       error: error.message
     });
   }

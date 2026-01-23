@@ -1,5 +1,7 @@
 //#region 
 import  {getUsers, createUser, updateUserData, getUserDataById, deleteUserData, login, removeToken, removeAllTokens } from '../services/user_service.js'
+import { zodLogin, zodRegister, zodUpdateUser } from '../validators/user_validator.js'
+import { z } from 'zod'
 //#endregion
 
 //#region 
@@ -7,16 +9,24 @@ import  {getUsers, createUser, updateUserData, getUserDataById, deleteUserData, 
 // create new user data methodController
 const registerUser = async(request, response) =>{
   try {
-    const role = request.body.role?.trim()
-    if (role && role.toLowerCase() === 'sysmanager') {
+    const validateData = zodRegister.parse(request.body)
+    // const role = request.body.role?.trim()
+    if (validateData.role === 'sysmanager') {
       return response.status(403).json({ 
         success: false, 
         message: "Forbidden role!, registration as sysManager is prohibited." 
       });
     }
-    const { user, token } = await createUser(request.body)
+    const { user, token } = await createUser(validateData)
     return response.status(201).json({message: 'Registraion successsful', user, token })
   } catch (error) {
+    if(error instanceof z.ZodError){
+      return response.status(400).json({
+        errors: (error.errors || []).map(error => ({
+          field: error.path[0], massage: error.message
+        }))
+      })
+    }
     // Check for duplicate email error
     if (error.code === 11000) {
       return response.status(400).json({ error: "Email already exists" });
@@ -28,11 +38,18 @@ const registerUser = async(request, response) =>{
 // login methodController
 const loginUser = async(request, response) =>{
   try {
-    const { user, token } = await login(request.body.email, request.body.password)
+    const validateData = zodLogin.parse(request.body)
+    const { user, token } = await login(validateData.email, validateData.password)
     response.status(200).json({message: 'Login successsful', user, token })
   } catch (error) {
-    const status = error.message.includes("not found") ? 401 : 500;
-    response.status(status).json({messge: 'Login Faild', error: "Invalid credentials"})
+    if (error instanceof z.ZodError) {
+      return response.status(400).json({
+        message: "Invalid input data",
+        errors: (error.errors || []).map(error => ({ field: error.path[0], message: error.message }))
+      });
+    }
+    const status = error.message.includes("not found") ? 404 : 500;
+    response.status(status).json({error: error.message})
   }
 }
 
@@ -77,16 +94,26 @@ const _getUserDataById = async(request, response) =>{
 // update user data methodController 
 const _updateUserData = async (request, response) =>{
   try {
+    const validateData = zodUpdateUser.parse(request.body)
+    const {id} = request.params
+    const user = await getUserDataById(id)
+    const currentUserId = request.user._id.toString()
     const currentUserRole = request.user.role
-    if(currentUserRole === 'sysManager'){
-      const user = await updateUserData(request.params.id, request.body)
-        return response.status(201).json({message: `update user with id: ** ${request.params.id} ** is successfully`, user})
+    if(currentUserRole === 'sysManager' || user._id.toString() === currentUserId){
+      const updatedUser = await updateUserData(id, validateData)
+        return response.status(200).json({message: `update user with id: ** ${id} ** is successfully`, updatedUser})
     }else{
       return response.status(403).json({
-        message: "Access Denied: You are not authorized to view this contract."
+        message: "Access Denied: You are not authorized to update this user profile."
       });
     }
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return response.status(400).json({
+        message: "Invalid input data",
+        errors: (error.errors || []).map(error => ({ field: error.path[0], message: error.message }))
+      });
+    }
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
   }
@@ -99,19 +126,18 @@ const _deleteUserData = async (request, response) =>{
     const currentUserId = request.user._id.toString()
     const {id} = request.params
     if(currentUserRole === 'sysManager' || (currentUserId === id)){
-      const deleteduser = await deleteUserData(request.params.id)
+      const deleteduser = await deleteUserData(id)
       if (!deleteduser) {
         return response.status(404).json({ success: false, message: "User not found" });
       }
-      response.status(200).json({message: `delete user with id: ** ${request.params.id} ** is successfully`, deleteduser})
+      response.status(200).json({message: `delete user with id: ** ${id} ** is successfully`, deleteduser})
     }else{
       return response.status(403).json({
         message: "Access Denied: You are not authorized."
       });
     }
   } catch (error) {
-    const status = error.message.includes("not found") ? 404 : 500;
-    response.status(status).json({error: error.message})
+    response.status(500).json({error: 'Failed to delete user'})
   }
 }
 

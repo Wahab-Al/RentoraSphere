@@ -6,8 +6,6 @@ import mongoose from "mongoose";
 //#region Unit Schema
 const unitSchema = new mongoose.Schema({
   title:{type: String, required: true, trim: true, maxLength: 50, minLength: 5},
-  // isunit: {type: Boolean, default: false},
-  // isApartment: {type: Boolean, default: false},
   unitType: {type: String, enum: ['house', 'apartment', 'villa', 'studio'], 
     requierd: [true, "Please specify the unit type"], lowercase: true, trim: true},
   price: {type: Number, required: true, min: 0},
@@ -26,13 +24,5 @@ const unitSchema = new mongoose.Schema({
 }, { timestamps: true})
 //#endregion
 
-//#region Check Hook if it unit or Apartment
-// unitSchema.pre('save', function (){
-//   if(this.isunit && this.isApartment)
-//     this.isApartment = false
-// })
-//#endregion
-
 const Unit = mongoose.model('Unit', unitSchema)
 export default Unit
-

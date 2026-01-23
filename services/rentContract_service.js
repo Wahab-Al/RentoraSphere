@@ -85,8 +85,8 @@ const updateContractData = async(contractId, newContractDetails) =>{
   const newContract = await RentContract.findByIdAndUpdate(contractId, newContractDetails, {new:true, runValidators: true})
   if(!newContract)
     throw new Error(`Contract with id ${contractId} not found`);
+  var newUnitStatus
   if(newContractDetails.contractState){
-    let newUnitStatus
     switch (newContractDetails.contractState) {
       case 'active':
         newUnitStatus = 'rented'
@@ -124,7 +124,7 @@ const deleteContractData = async(contractId) =>{
 //#endregion
 
 
-//#region 
+//#region take action about a request contract
 const updateContractStatusToApproveOrRejectContract = async (contractId, ownerId, action) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -169,55 +169,6 @@ const updateContractStatusToApproveOrRejectContract = async (contractId, ownerId
   }
 };
 //#endregion
-
-// // approv Rental contract
-// const approveContract = async(contractId, ownerId)=>{
-
-//   // start session to trak the changes
-//   const session = await mongoose.startSession()
-//   session.startTransaction()
-//   try {
-    
-//     const contract = await RentContract.findById(contractId)
-//     .populate([
-//       { path: 'unit', select: 'title price location' },
-//       { path: 'user', select: 'name surname email phone' }
-//     ]).session(session)
-
-//     if(!contract) throw new Error('Contract not found')
-    
-//     if(contract.unitOwner.toString() !== ownerId.toString()){
-//       throw new  Error('Unauthorized: Only owner can approve this contract request')
-//     }
-
-//     if(contract.orderStatus !== 'pending'){
-//       throw new  Error (`Invalid action: Contract is already ${contract.orderStatus}`)
-//     }
-
-//     contract.orderStatus = 'approved'
-//     contract.contractState = 'active'
-
-//     await contract.save({session})
-
-//     await Unit.findByIdAndUpdate(contract.unit._id, {
-//       unitStatus: 'rented'
-//     }, {session})
-
-//     // commit and and the session
-//     await session.commitTransaction();
-//     session.endSession();
-
-//     // publish Notification
-//     contractEvents.emit('contractApproved', contract)
-
-//     return {message: 'Approved successfully', contract: contract }
-//   } catch (error) {
-//     // reject changes
-//     await session.abortTransaction();
-//     session.endSession();
-//     throw error;
-//   }
-// }
 
 
 export { getContracts, getContractById, createContractData, updateContractData, deleteContractData, updateContractStatusToApproveOrRejectContract }
