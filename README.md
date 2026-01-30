@@ -170,5 +170,5 @@ MIT  License
 ## 🧪 API Testing (Postman)
 /docs/Rentora_Sphere.postman_collection.json
 
-![Tests](https://img.shields.io/badge/tests-coming_soon-yellow?style=flat-square&logo=jest)
+![Tests](https://img.shields.io/badge/Jest-coming_soon-yellow?style=flat-square&logo=jest)
 [![Docker](https://img.shields.io/badge/docker-coming_soon-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
