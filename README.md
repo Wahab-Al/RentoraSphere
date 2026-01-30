@@ -1,8 +1,10 @@
 [![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)](https://expressjs.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![npm version](https://img.shields.io/npm/v/your-package-name.svg)](https://www.npmjs.com/package/your-package-name)
 [![Mongoose](https://img.shields.io/badge/Mongoose-ODM-red?logo=mongoose&logoColor=white)](https://mongoosejs.com)
 [![MongoDB Atlas](https://img.shields.io/badge/MongoDB_Atlas-Cloud_DB-green?logo=mongodb&logoColor=white)](https://www.mongodb.com/atlas)
+![Validation](https://img.shields.io/badge/validation-Zod-blue?style=flat-square&logo=zod)
 [![JWT](https://img.shields.io/badge/JWT-Authentication-black?logo=jsonwebtokens&logoColor=white)](https://jwt.io)
 [![Postman](https://img.shields.io/badge/Postman-API_Testing-orange?logo=postman&logoColor=white)](https://www.postman.com)
 [![dotenv](https://img.shields.io/badge/dotenv-Environment_Variables-yellow?logo=dotenv&logoColor=black)](https://github.com/motdotla/dotenv)
@@ -167,3 +169,6 @@ MIT  License
 ---
 ## 🧪 API Testing (Postman)
 /docs/Rentora_Sphere.postman_collection.json
+
+![Tests](https://img.shields.io/badge/tests-coming_soon-yellow?style=flat-square&logo=jest)
+[![Docker](https://img.shields.io/badge/docker-coming_soon-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
