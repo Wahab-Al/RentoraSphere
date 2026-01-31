@@ -11,6 +11,7 @@
 [![argon2](https://img.shields.io/badge/argon2-Password_Hashing-blue)](https://www.npmjs.com/package/argon2)
 [![NodeMailer](https://img.shields.io/badge/Nodemailer-Email_Service-green)](https://nodemailer.com)
 [![Mailtrap](https://img.shields.io/badge/Mailtrap-Email_Testing-orange?logo=mailtrap&logoColor=white)](https://mailtrap.io)
+![GitHub Actions](https://img.shields.io/badge/github%20actions-%232088FF.svg?style=flat-square&logo=githubactions&logoColor=white)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## 🔐 Security Stack
