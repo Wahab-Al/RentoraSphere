@@ -1,3 +1,5 @@
+![Rentora Sphere Typing](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=00B4D8&width=435&lines=Welcome+to+Rentora+Sphere;Manage+Rentals+Seamlessly;Efficient+Resource+Tracking;Your+All-in-One+Rental+Solution)
+
 [![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)](https://expressjs.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
@@ -20,7 +22,6 @@
 [![MongoDB Injection](https://img.shields.io/badge/NoSQL-Injection-green?logo=mongodb&logoColor=white)](https://owasp.org/www-community/attacks/NoSQL_Injection)
 [![HPP](https://img.shields.io/badge/HPP-Protection-orange?logo=security&logoColor=white)](https://www.npmjs.com/package/hpp)
 [![Rate Limiting](https://img.shields.io/badge/Rate-Limit-red?logo=fastapi&logoColor=white)](https://www.npmjs.com/package/express-rate-limit)
-
 
 
 # 🏢 Rentora Speher | Advanced Property Management API
