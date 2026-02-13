@@ -1,5 +1,5 @@
 //#region 
-import express, { response } from 'express'
+import express from 'express'
 import unitRoutes from '../routes/unit_routes.js'
 import usersRoutes from '../routes/user_routes.js'
 import createSubscribers from './subscribers/contractSubscribers.js'

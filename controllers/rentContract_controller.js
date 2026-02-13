@@ -20,6 +20,12 @@ const getContractsController = async (request, response) => {
       const isOwner = contract.unitOwner?._id?.toString() === currentUserId;
       return isRenter || isOwner;
     });
+    if(userContracts.length === 0){
+      return response.status(200).json({
+        message: `No Rental Contracts for user with id: ** ${currentUserId} ** has been invoked`,
+        data: userContracts
+      });
+    }
     return response.status(200).json({
       message: `Rental Contracts for user with id: ** ${currentUserId} ** has been invoked`,
       data: userContracts
@@ -97,7 +103,7 @@ const updateContractDataController = async (request, response) => {
     const currentUserRole = request.user.role;
 
     if (Object.keys(validateData).length === 0) {
-      return res.status(400).json({ message: "No valid fields provided" })
+      return response.status(400).json({ message: "No valid fields provided" })
     }
 
     const contract = await getContractById(id); 

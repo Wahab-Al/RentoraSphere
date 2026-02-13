@@ -1,0 +1,86 @@
+{
+	"info": {
+		"_postman_id": "5670fd49-42a1-4157-bb8d-2cd7945ff143",
+		"name": "Rentora Sphere API - Production V1",
+		"description": "### Rentora Sphere Real Estate Management System\nThis API handles the core business logic for property management, including user authentication, unit inventory, and lease contracts.\n\n**Base URLs:**\n- Production: `https://rentorasphere-production-cba2.up.railway.app/api/`\n- Development: `http://localhost:5001/api/` \n\n**Authentication:**\nMost endpoints require a Bearer Token obtained from the `/users/login` endpoint. Ensure the `token` variable is set in your environment.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Identity & Access",
+			"description": "Endpoints related to user lifecycle: registration, session management, and profile updates.",
+			"item": [
+				{
+					"name": "Register New User",
+					"request": {
+						"description": "Creates a new user account in the system. \n**Note:** Registration is public and does not require a token.",
+						"method": "POST",
+						"url": "{{baseUrlUsers}}register",
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Naser\",\n  \"surname\": \"Khaled\",\n  \"email\": \"naser.dev@outlook.com\",\n  \"phone\": \"+2210550174\",\n  \"password\": \"L-Anderson#2026!X-34bG\"\n}",
+							"options": { "raw": { "language": "json" } }
+						}
+					}
+				},
+				{
+					"name": "User Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();",
+									"if (pm.response.code === 200 && responseData.token) {",
+									"    pm.environment.set(\"token\", responseData.token);",
+									"    if (responseData.user && responseData.user.id) {",
+									"        pm.environment.set(\"userId\", responseData.user.id);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"description": "Authenticates user and returns a JWT. The script automatically updates the `token` environment variable on success.",
+						"method": "POST",
+						"url": "{{baseUrlUsers}}login"
+					}
+				}
+			]
+		},
+		{
+			"name": "Property Units",
+			"description": "Management of physical assets (apartments, villas, etc.).",
+			"item": [
+				{
+					"name": "Fetch All Units",
+					"request": {
+						"description": "Retrieves a list of all available properties. Supports pagination and filtering (to be implemented).",
+						"method": "GET",
+						"url": "{{baseUrlUnits}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Lease Contracts",
+			"description": "Handles legal agreements between users and units.",
+			"item": [
+				{
+					"name": "Request New Contract",
+					"request": {
+						"description": "Initiates a contract request for a specific unit. Requires `unitId` in the body and `token` in headers.",
+						"method": "POST",
+						"url": "{{baseUrlContracts}}request/{{contractId}}"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{ "key": "baseUrlUsers", "value": "https://rentorasphere-production-cba2.up.railway.app/api/users/", "type": "string" },
+		{ "key": "baseUrlUnits", "value": "https://rentorasphere-production-cba2.up.railway.app/api/units/", "type": "string" },
+		{ "key": "baseUrlContracts", "value": "https://rentorasphere-production-cba2.up.railway.app/api/contracts/", "type": "string" }
+	]
+}
