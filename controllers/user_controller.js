@@ -93,7 +93,7 @@ const _getUserDataById = async(request, response) =>{
         message: "Unauthorized: You can only view your own profile."
       });
     }
-    const user = await getUserById(id);
+    const user = await getUserDataById(id);
     if (!user) {
       return response.status(404).json({ message: "User not found" });
     }
