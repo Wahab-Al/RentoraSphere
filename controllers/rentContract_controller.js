@@ -22,7 +22,7 @@ const getContractsController = async (request, response) => {
     });
     if(userContracts.length === 0){
       return response.status(200).json({
-        message: `No Rental Contracts for user with id: ** ${currentUserId} ** has been invoked`,
+        message: `No Rental Contracts for user with id: ** ${currentUserId} ** has been Found`,
         data: userContracts
       });
     }

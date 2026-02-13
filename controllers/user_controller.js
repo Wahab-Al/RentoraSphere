@@ -83,15 +83,24 @@ const displayUsers = async(request, response) =>{
 // get user data by id methodController
 const _getUserDataById = async(request, response) =>{
   try {
-    const currentUserRole =  request.user.role
-    if(currentUserRole === 'sysManager'){
-      const user = await getUserDataById(request.params.id)
-      response.status(200).json(user)
-    }else{
+    const { id } = request.params; 
+    const currentUserId = request.user._id.toString();
+    const currentUserRole = request.user.role;
+    const isAccOwner = currentUserId === id;
+    const isSysManager = currentUserRole === 'sysManager';
+    if (!isAccOwner && !isSysManager) {
       return response.status(403).json({
-        message: "Access Denied: You are not authorized to view this user."
+        message: "Unauthorized: You can only view your own profile."
       });
     }
+    const user = await getUserById(id);
+    if (!user) {
+      return response.status(404).json({ message: "User not found" });
+    }
+    response.status(200).json({
+      message: "User data retrieved successfully",
+      data: user
+    });
   } catch (error) {
     const status = error.message.includes("not found") ? 404 : 500;
     response.status(status).json({error: error.message})
