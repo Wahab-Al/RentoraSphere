@@ -29,16 +29,15 @@
 **Rentora** is a robust property management backend designed to streamline the rental process between owners and tenants. This project focuses on **high data integrity**, **secure authentication**, and **seamless rental contract workflows**, providing a scalable foundation for modern real estate platforms.
 
 
+## Live API Documentation 🚀
+#### [🌐Explore Live Site](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)
+
+
 
 ## 🎯 Core Objectives
 * **Streamlined Operations:** Automating the lifecycle of rental agreements from creation to termination.
 * **Data Integrity:** Ensuring that all rental agreements, user roles, and financial records are validated.
 * **Security First:** Implementing secure authentication and strict object-level authorization.
-
----
-
-## Live API Documentation 🚀
-#### [🌐Explore Live Site](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)
 
 ---
 
