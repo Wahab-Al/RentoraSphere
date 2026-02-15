@@ -1,5 +1,7 @@
 ![Rentora Sphere Typing](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=00B4D8&width=435&lines=Welcome+to+Rentora+Sphere;Manage+Rentals+Seamlessly;Efficient+Resource+Tracking;Your+All-in-One+Rental+Solution)
 
+ [![Postman Docs](https://img.shields.io/badge/Postman-Documentation-orange?style=for-the-badge&logo=postman)](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)
+ 
 [![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)](https://expressjs.com/)
 [![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
