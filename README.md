@@ -32,7 +32,7 @@
 
 
 ## Live API Documentation 🚀
-#### [🌐Explore Live Site](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)
+#### [🌐Explore Postman Doc](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)
 
 
 
