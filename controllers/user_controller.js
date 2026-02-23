@@ -1,4 +1,5 @@
 //#region 
+import User from '../models/user.js'
 import  {getUsers, createUser, updateUserData, getUserDataById, deleteUserData, login, removeToken, removeAllTokens } from '../services/user_service.js'
 import { zodLogin, zodRegister, zodUpdateUser } from '../validators/user_validator.js'
 import { z } from 'zod'
@@ -18,6 +19,17 @@ const registerUser = async(request, response) =>{
       });
     }
     const { user, token } = await createUser(validateData)
+
+    // let finalRole = 'user';
+    // if(validateData.ownerData && Object.keys(validateData.ownerData).length > 0){
+    //   finalRole = 'unitOwner'
+    // }
+    // const user = await User.create({
+    //   ...validateData, role: finalRole
+    // })
+
+    // const  token  = await user.generateToken();
+
     return response.status(201).json({message: 'Registraion successsful', user, token })
   } catch (error) {
     if(error instanceof z.ZodError){

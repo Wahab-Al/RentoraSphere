@@ -15,6 +15,7 @@ const zodRegister = z.object({
     ),
   phone: z.string().min(7).max(15), 
   role: z.enum(["user", "sysManager", "unitOwner"]).default("user"),
+  ownerData: z.object({}).passthrough().optional().nullable(),
 })
 
 

@@ -7,7 +7,14 @@ import User from '../models/user.js'
 
 // creat a new user data
 const createUser = async(enteredUser) =>{
-  const user = await User.create(enteredUser)
+  let finalRole = 'user';
+    if (enteredUser.ownerData && Object.keys(enteredUser.ownerData).length > 0) {
+      finalRole = 'unitOwner';
+    }
+  const user = await User.create({
+        ...enteredUser,
+        role: finalRole
+    });
   const token = await user.generateToken()
   return {user, token}
 }
