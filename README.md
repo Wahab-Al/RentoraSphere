@@ -1,3 +1,8 @@
+
+# RentoraSphere
+
+A backend API for managing rental properties, contracts, and multi-role access control.
+
 ![Rentora Sphere Typing](https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=00B4D8&width=435&lines=Welcome+to+Rentora+Sphere;Manage+Rentals+Seamlessly;Efficient+Resource+Tracking;Your+All-in-One+Rental+Solution)
 
  [![Postman Docs](https://img.shields.io/badge/Postman-Documentation-orange?style=for-the-badge&logo=postman)](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)
@@ -25,124 +30,159 @@
 [![HPP](https://img.shields.io/badge/HPP-Protection-orange?logo=security&logoColor=white)](https://www.npmjs.com/package/hpp)
 [![Rate Limiting](https://img.shields.io/badge/Rate-Limit-red?logo=fastapi&logoColor=white)](https://www.npmjs.com/package/express-rate-limit)
 
+---
 
-# 🏢 Rentora Speher | Advanced Property Management API
+## The Problem
 
-**Rentora** is a robust property management backend designed to streamline the rental process between owners and tenants. This project focuses on **high data integrity**, **secure authentication**, and **seamless rental contract workflows**, providing a scalable foundation for modern real estate platforms.
-
-
-## Live API Documentation 🚀
-#### [🌐Explore Postman Doc](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)
-
-
-
-## 🎯 Core Objectives
-* **Streamlined Operations:** Automating the lifecycle of rental agreements from creation to termination.
-* **Data Integrity:** Ensuring that all rental agreements, user roles, and financial records are validated.
-* **Security First:** Implementing secure authentication and strict object-level authorization.
+The real challenge wasn't just authentication. It was **authorization at the object level**: ensuring an owner can only manage their own units, a renter only sees their own contracts, and every state transition in a contract (request → approve/reject) is gated by the right party.
 
 ---
 
-## 🚀 Key Technical Features
+## The Solution
 
-### 🔐 Secure Multi-Tenancy & Authorization
-Rentora implements strict **Object-Level Authorization** to ensure data isolation:
-* **Tenants:** Can only access their own rent requests and active contracts.
-* **Owners:** Can manage their own units and have exclusive rights to approve/reject contracts for their properties.
-* **System Managers:** Retain global administrative oversight.
-* **ID Isolation:** Internal `.filter()` logic ensures users never retrieve data belonging to others.
+RentoraSphere models this as a three-role system with strict data isolation enforced at the query and service layer, not just at the route level.
 
-### 📝 Contract Lifecycle Management
-implemented is a robust state-machine logic for handling contracts:
-* **Workflow:** Dedicated controllers for `rejectContract` and `approveContract`.
-* **Subscribers Pattern:** Event-driven architecture to handle side effects like notifications when contract statuses change.
-* **Validation:** Custom checks to prevent unauthorized data manipulation.
+Each role operates within a defined data boundary:
+
+- **Renter** can browse units, submit rent requests, and track their own contracts
+- **Owner** manages their listed units and has sole authority to approve or reject incoming contracts
+- **sysManager** platform-wide admin access with no ownership restrictions
+
+Contract state changes are handled through dedicated controllers (`approveContract`, `rejectContract`) with a subscriber pattern for side effects like email notifications keeping the business logic clean and the notification layer decoupled.
 
 ---
 
-## 📚 API Documentation
-
-The API follows RESTful principles. All protected endpoints require: 
-- a valid **Bearer Token** in the Authorization header.
-- Role-based access control (RBAC) is enforced where applicable (Renter(User), Owner, sysManager).
-
-### 🔐 Authentication
-| Method | Endpoint | Description | Access |
-| :--- | :--- | :--- | :--- |
-| `POST` | `http://localhost:5001/api/users/register` | Register a new user | Public |
-| `POST` | `http://localhost:5001/api/users/login` | Authenticate & receive JWT | Public |
-| `POST` | `http://localhost:5001/api/users/logout` | Invalidate current session token | Private/ Authenticated |
-| `POST` | `http://localhost:5001/api/users/logoutAll` | Invalidate all active sessions for this user | Private/ Authenticated |
-
-### 🏠 Units (Properties)
-| Method | Endpoint | Description | Access Control |
-| :--- | :--- | :--- | :--- |
-| `GET` | `http://localhost:5001/api/units/` | List all available units | Public |
-| `GET` | `http://localhost:5001/api/units/:id` | Get specific unit details | Public |
-| `POST` | `http://localhost:5001/api/units/` | Add a new property unit | **Owner Only** |
-| `PATCH` | `http://localhost:5001/api/units/:id` | Update unit details | **Owner (Self) / sysManager** |
-| `DELETE` | `http://localhost:5001/api/units/:id` | Remove a unit listing | **Owner (Self) / sysManager** |
-
-### 📜 Rent Contracts
-| Method | Endpoint | Description | Access Control |
-| :--- | :--- | :--- | :--- |
-| `POST` | `http://localhost:5001/api/contracts/request/:id` | Create a new rent request | **Renter** |
-| `GET` | `http://localhost:5001/api/contracts/` | List filtered contracts | **Renter/Owner (Self) / sysManager** |
-| `GET` | `http://localhost:5001/api/contracts/:id` | Get specific contract | **Parties involved / sysManager** |
-| `PATCH` | `http://localhost:5001/api/contracts/approve/:id` | approve a contract | **Unit Owner Only** |
-| `PATCH` | `http://localhost:5001/api/contracts/reject/:id` | Reject a contract | **Unit Owner Only** |
-
-### 👤 Users
-| Method | Endpoint | Description | Access Control |
-| :--- | :--- | :--- | :--- |
-| `GET` | `http://localhost:5001/api/users/` | Get users profile info | Authorized Users |
-| `GET` | `http://localhost:5001/api/users/:id` | Get user profile info | Authorized Users |
-| `PATCH` | `http://localhost:5001/api/users/:id` | Update user profile info | Authorized Users |
-| `DELETE`| `http://localhost:5001/api/users/:id` | Delete account | **Account Owner / sysManager** |
-
-
----
-
-## Environement Setup(.env)
-#### --- Server Configuration ---
-PORT=`5001`
-
-#### --- Database Configuration ---
-##### Local Database (Uncomment to use)
-MONGO_URI=`mongodb://127.0.0.1:27017/rentorasphere`
-##### MongoDB Atlas (Cloud)
-MONGO_URI=`mongodb+srv://<username>:<password>@cluster.mongodb.net/rentorasphere?retryWrites=true&w=majority`
-
-#### --- Security & Authentication ---
-JWT_SECRET_KEY=`your_super_secret_random_string_here`
-
-#### --- Initial System Manager (sysManager) Credentials ---
-SYS_MANAGER_EMAIL=`admin@rentora.com` 
-
-SYS_MANAGER_PASS=`AdminPassword123!`
-
-#### --- Email Service Configuration (Mailtrap) ---
-EMAIL_HOST=`sandbox.smtp.mailtrap.io`
-
-RENTORA_EMAIL=`no-reply@rentora.com`
-
-EMAIL_PORT=`2525`
-
-EMAIL_USER=`your_mailtrap_user_id`
-
-EMAIL_PASS=`your_mailtrap_password`
-
-
-## 🛠 Standard Response Patterns
-
-### ✅ Success Response
-```json
-{
-  "message": "Operation successful",
-  "data": { ... }
-}
+## Architecture
 
 ```
+.
+├── config/           # DB connection, environment setup
+├── controllers/      # Route handlers, delegate to services
+├── services/         # Business logic layer (contracts, units, users)
+├── middlewares/      # Auth, RBAC enforcement, error handling, security
+├── models/           # Mongoose schemas (User, Unit, Contract)
+├── routes/           # Express routers
+├── validators/       # Zod schemas for request validation
+├── src/
+│   └── server.js     # Entry point
+└── .github/
+    └── workflows/    # CI pipeline
+```
+
+The separation between controllers and services is intentional controllers handle request/response shaping, services own the actual data logic. This makes the business rules testable without spinning up an HTTP server.
+
+---
+
+## Tech Decisions
+
+| Decision | Why |
+|---|---|
+| **argon2** over bcrypt | Better resistance against GPU-based attacks; current OWASP recommendation |
+| **Zod** for validation | Schema-first validation with TypeScript-friendly inference; catches bad input before it hits the DB |
+| **Mongoose** with explicit schemas | Enforces shape at the ORM layer; avoids schema drift in MongoDB |
+| **express-rate-limit + hpp** | Prevents brute force and HTTP parameter pollution without external infrastructure |
+| **Helmet + xss-clean + mongo-sanitize** | Defense-in-depth for common Node/Express attack vectors |
+| **Nodemailer + Mailtrap** | Decoupled email service; Mailtrap keeps dev/staging environments safe from sending real emails |
+
+---
+
+## API Overview
+
+Full documentation with request/response examples: **🌐[Postman Docs →](https://documenter.getpostman.com/view/51361413/2sBXcBnhaH)**
+
+### Auth
+
+| Method | Endpoint | Access |
+|--------|----------|--------|
+| `POST` | `/api/users/register` | Public |
+| `POST` | `/api/users/login` | Public |
+| `POST` | `/api/users/logout` | Authenticated |
+| `POST` | `/api/users/logoutAll` | Authenticated |
+
+### Units
+
+| Method | Endpoint | Access |
+|--------|----------|--------|
+| `GET` | `/api/units/` | Public |
+| `GET` | `/api/units/:id` | Public |
+| `POST` | `/api/units/` | Owner only |
+| `PATCH` | `/api/units/:id` | Owner (self) / sysManager |
+| `DELETE` | `/api/units/:id` | Owner (self) / sysManager |
+
+### Contracts
+
+| Method | Endpoint | Access |
+|--------|----------|--------|
+| `POST` | `/api/contracts/request/:id` | Renter |
+| `GET` | `/api/contracts/` | Parties involved / sysManager |
+| `GET` | `/api/contracts/:id` | Parties involved / sysManager |
+| `PATCH` | `/api/contracts/approve/:id` | Unit owner only |
+| `PATCH` | `/api/contracts/reject/:id` | Unit owner only |
+
+### Users
+
+| Method | Endpoint | Access |
+|--------|----------|--------|
+| `GET` | `/api/users/` | Authenticated |
+| `GET` | `/api/users/:id` | Authenticated |
+| `PATCH` | `/api/users/:id` | Account owner |
+| `DELETE` | `/api/users/:id` | Account owner / sysManager |
+
+---
+
+## Setup
+
+**Clone and install**
+```bash
+git clone https://github.com/Wahab-Al/RentoraSphere.git
+cd RentoraSphere
+npm install
+```
+
+**Environment variables** — create a `.env` file:
+```env
+# Server
+PORT=5001
+
+# Database local or Atlas
+MONGO_URI=mongodb://127.0.0.1:27017/rentorasphere
+# MONGO_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/rentorasphere
+
+# Auth
+JWT_SECRET_KEY=your_secret_here
+
+# Initial admin account
+SYS_MANAGER_EMAIL=admin@rentora.com
+SYS_MANAGER_PASS=AdminPassword123!
+
+# Email (Mailtrap for dev)
+EMAIL_HOST=sandbox.smtp.mailtrap.io
+EMAIL_PORT=2525
+EMAIL_USER=your_mailtrap_user
+EMAIL_PASS=your_mailtrap_pass
+RENTORA_EMAIL=no-reply@rentora.com
+```
+
+**Run**
+```bash
+node src/server.js
+```
+
+---
+
+## Security Stack
+
+- JWT-based stateless auth with multi-session logout support
+- argon2 password hashing
+- Role-based access control (RBAC) with object-level isolation
+- Helmet for HTTP security headers
+- express-rate-limit for brute force protection
+- mongo-sanitize to prevent NoSQL injection
+- xss-clean for input sanitization
+- hpp to prevent HTTP parameter pollution
+
+---
+
 ## Screenshots: 📸
 <img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/registerUser.png" alt="Register User" width="300"><img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/login.png" alt="Login" width="300">
 <img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/logout.png" alt="Logout" width="300">
@@ -155,28 +195,6 @@ EMAIL_PASS=`your_mailtrap_password`
 <img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/contractsList.png" alt="Contracts List" width="300">
 <img src="https://raw.githubusercontent.com/Wahab-Al/RentoraSphere/8b54fc97d95d12763639aa628d99d080b1b8f267/postman/screenshots/UnitList.png" alt="Unit List" width="300">
 
+## License
 
----
-# 🏗 Installation & Setup:
-
-### Clone the Repository
-```bash
-git clone https://github.com/wahab-al/rentora-sphere.git
-
-```
-### Install Dependencies
-npm install
-
-## Run the Server:
-node src/server.js
-
----
-License: 📄⚖️
-MIT  License
-
----
-## 🧪 API Testing (Postman)
-/docs/Rentora_Sphere.postman_collection.json
-
-![Tests](https://img.shields.io/badge/Jest-coming_soon-yellow?style=flat-square&logo=jest)
-[![Docker](https://img.shields.io/badge/docker-coming_soon-2496ED?style=flat-square&logo=docker)](https://www.docker.com/)
+MIT
