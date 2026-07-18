@@ -12,8 +12,8 @@ const createUser = async(enteredUser) =>{
       finalRole = 'unitOwner';
     }
   const user = await User.create({
-        ...enteredUser,
-        role: finalRole
+      ...enteredUser,
+      role: finalRole
     });
   const token = await user.generateToken()
   return {user, token}
@@ -51,16 +51,6 @@ const updateUserData = async(userId, user)=>{
     throw new Error `user with id: ${userId} that you call is not exist`
   return newUserData
 }
-/**
- * 
-  *const updateUserData = async (userId, updateData) => {
-      const user = await User.findById(userId);
-      if (!user) throw new Error(`User with id: ${userId} not found`);
-      Object.assign(user, updateData);
-      await user.save(); 
-      return user;
-}
- */
 
 // delete user data
 const deleteUserData = async(userId)=>{

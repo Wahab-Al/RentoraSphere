@@ -33,7 +33,7 @@ app.use(hpp())
 // prevent Cross-Site Scripting (XSS) attacks
 app.use(xssSanitize)
 
-// prevent SQL Injection
+// Sanitize incoming requests
 app.use(mongoSafeSanitizer)
 
 // Initialize event subscribers to start listening for system events/ Notifications

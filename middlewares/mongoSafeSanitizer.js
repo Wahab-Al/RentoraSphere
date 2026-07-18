@@ -1,21 +1,35 @@
 
-function sanitizeObject(obj) {
-  if (!obj || typeof obj !== 'object') return
+// middleware/mongoSafeSanitizer.js
 
-  for (const key of Object.keys(obj)) {
-    if (key.startsWith('$') || key.includes('.')) {
-      delete obj[key]
-      continue
+function sanitize(value) {
+  // Ignore null and primitive values
+  if (value === null || typeof value !== "object") {
+    return;
+  }
+
+  // Handle arrays
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      sanitize(item);
     }
-    sanitizeObject(obj[key])
+    return;
+  }
+
+  // Handle objects
+  for (const key of Object.keys(value)) {
+    // Remove MongoDB operator keys and dot notation
+    if (key.startsWith("$") || key.includes(".")) {
+      delete value[key];
+      continue;
+    }
+    sanitize(value[key]);
   }
 }
 
 const mongoSafeSanitizer = (req, res, next) => {
-  sanitizeObject(req.body)
-  sanitizeObject(req.query)
-  sanitizeObject(req.params)
-  next()
-}
+  sanitize(req.body);
+  sanitize(req.query);
+  sanitize(req.params);
 
-export default mongoSafeSanitizer
+  next();
+};
